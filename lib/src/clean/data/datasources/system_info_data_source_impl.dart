@@ -1,31 +1,22 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../domain/entities/device_info_entity.br.dart';
-import '../../domain/entities/media_query_info_entity.br.dart';
 import '../../domain/entities/package_info_entity.br.dart';
 import '../../domain/entities/platform_info_entity.br.dart';
 import 'system_info_data_source.dart';
 
 /// Implementation of SystemInfoDataSource using platform plugins
-/// Uses Flutter plugins (device_info_plus, package_info_plus) but implements pure interface
+/// No Flutter UI dependencies - only uses platform plugins
+/// MediaQuery is handled directly in presentation layer
 class SystemInfoDataSourceImpl implements SystemInfoDataSource {
   final DeviceInfoPlugin _deviceInfoPlugin;
-  BuildContext? _context;
 
   SystemInfoDataSourceImpl({
     DeviceInfoPlugin? deviceInfoPlugin,
-    BuildContext? context,
-  })  : _deviceInfoPlugin = deviceInfoPlugin ?? DeviceInfoPlugin(),
-        _context = context;
-
-  /// Set BuildContext for MediaQuery access
-  void setContext(BuildContext context) {
-    _context = context;
-  }
+  }) : _deviceInfoPlugin = deviceInfoPlugin ?? DeviceInfoPlugin();
 
   @override
   Future<DeviceInfoEntity> getDeviceInfo() async {
@@ -168,48 +159,6 @@ class SystemInfoDataSourceImpl implements SystemInfoDataSource {
       numberOfProcessors: Platform.numberOfProcessors,
       localeName: Platform.localeName,
       hostname: Platform.localHostname,
-    );
-  }
-
-  @override
-  Future<MediaQueryInfoEntity> getMediaQueryInfo() async {
-    if (_context == null) {
-      throw StateError(
-        'BuildContext not set. Call setContext() before accessing MediaQuery info.',
-      );
-    }
-
-    final mediaQuery = MediaQuery.of(_context!);
-    final size = mediaQuery.size;
-    final padding = mediaQuery.padding;
-    final viewInsets = mediaQuery.viewInsets;
-    final viewPadding = mediaQuery.viewPadding;
-
-    return MediaQueryInfoEntity(
-      width: size.width,
-      height: size.height,
-      devicePixelRatio: mediaQuery.devicePixelRatio,
-      orientation: mediaQuery.orientation.name,
-      textScaleFactor: mediaQuery.textScaleFactor,
-      platformBrightness: mediaQuery.platformBrightness.name,
-      padding: {
-        'top': padding.top,
-        'bottom': padding.bottom,
-        'left': padding.left,
-        'right': padding.right,
-      },
-      viewInsets: {
-        'top': viewInsets.top,
-        'bottom': viewInsets.bottom,
-        'left': viewInsets.left,
-        'right': viewInsets.right,
-      },
-      viewPadding: {
-        'top': viewPadding.top,
-        'bottom': viewPadding.bottom,
-        'left': viewPadding.left,
-        'right': viewPadding.right,
-      },
     );
   }
 }

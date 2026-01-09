@@ -6,8 +6,6 @@ import '../../domain/entities/http_interaction_entity.br.dart';
 import '../../domain/entities/http_response_entity.br.dart';
 import 'http_log_data_source.dart';
 
-/// Implementation of HttpLogDataSource using Queue and StreamController
-/// No Flutter dependencies - Pure Dart
 class HttpLogDataSourceImpl implements HttpLogDataSource {
   final int maxEntries;
 

@@ -4,8 +4,6 @@ import 'dart:collection';
 import '../../domain/entities/log_event_entity.br.dart';
 import 'log_data_source.dart';
 
-/// Implementation of LogDataSource using Queue and StreamController
-/// No Flutter dependencies - Pure Dart
 class LogDataSourceImpl implements LogDataSource {
   final int maxEntries;
 
