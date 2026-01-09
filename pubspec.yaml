@@ -33,6 +33,7 @@ dependencies:
   # Clean Architecture dependencies
   freezed_annotation: ^2.4.1
   json_annotation: ^4.9.0
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
