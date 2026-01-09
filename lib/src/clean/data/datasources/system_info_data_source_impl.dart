@@ -23,109 +23,76 @@ class SystemInfoDataSourceImpl implements SystemInfoDataSource {
     try {
       if (Platform.isAndroid) {
         final info = await _deviceInfoPlugin.androidInfo;
-        return DeviceInfoEntity(
-          platform: 'Android',
-          properties: {
-            'model': info.model,
-            'manufacturer': info.manufacturer,
-            'osVersion': info.version.release,
-            'sdkVersion': info.version.sdkInt.toString(),
-            'isPhysicalDevice': info.isPhysicalDevice,
-            'device': info.device,
-            'display': info.display,
-            'hardware': info.hardware,
-            'product': info.product,
-            'brand': info.brand,
-          },
+        return DeviceInfoEntity.android(
+          model: info.model,
+          manufacturer: info.manufacturer,
+          osVersion: info.version.release,
+          sdkVersion: info.version.sdkInt,
+          isPhysicalDevice: info.isPhysicalDevice,
+          device: info.device,
+          display: info.display,
+          hardware: info.hardware,
+          product: info.product,
+          brand: info.brand,
         );
       } else if (Platform.isIOS) {
         final info = await _deviceInfoPlugin.iosInfo;
-        return DeviceInfoEntity(
-          platform: 'iOS',
-          properties: {
-            'model': info.model,
-            'manufacturer': 'Apple',
-            'osVersion': info.systemVersion,
-            'sdkVersion': info.systemVersion,
-            'isPhysicalDevice': info.isPhysicalDevice,
-            'name': info.name,
-            'systemName': info.systemName,
-            'utsname': info.utsname.machine,
-            'identifierForVendor': info.identifierForVendor,
-          },
+        return DeviceInfoEntity.ios(
+          model: info.model,
+          manufacturer: 'Apple',
+          osVersion: info.systemVersion,
+          isPhysicalDevice: info.isPhysicalDevice,
+          name: info.name,
+          systemName: info.systemName,
+          utsname: info.utsname.machine,
+          identifierForVendor: info.identifierForVendor,
         );
       } else if (Platform.isMacOS) {
         final info = await _deviceInfoPlugin.macOsInfo;
-        return DeviceInfoEntity(
-          platform: 'macOS',
-          properties: {
-            'model': info.model,
-            'manufacturer': 'Apple',
-            'osVersion': info.osRelease,
-            'sdkVersion': info.osRelease,
-            'isPhysicalDevice': true,
-            'computerName': info.computerName,
-            'hostName': info.hostName,
-            'arch': info.arch,
-            'kernelVersion': info.kernelVersion,
-          },
+        return DeviceInfoEntity.macOS(
+          model: info.model,
+          manufacturer: 'Apple',
+          osVersion: info.osRelease,
+          isPhysicalDevice: true,
+          computerName: info.computerName,
+          hostName: info.hostName,
+          arch: info.arch,
+          kernelVersion: info.kernelVersion,
         );
       } else if (Platform.isWindows) {
         final info = await _deviceInfoPlugin.windowsInfo;
-        return DeviceInfoEntity(
-          platform: 'Windows',
-          properties: {
-            'model': info.computerName,
-            'manufacturer': 'Microsoft',
-            'osVersion': info.majorVersion.toString(),
-            'sdkVersion': '${info.majorVersion}.${info.minorVersion}',
-            'isPhysicalDevice': true,
-            'buildNumber': info.buildNumber,
-            'platformId': info.platformId,
-            'productType': info.productType,
-            'systemMemoryInMegabytes': info.systemMemoryInMegabytes,
-          },
+        return DeviceInfoEntity.windows(
+          model: info.computerName,
+          manufacturer: 'Microsoft',
+          osVersion: info.majorVersion.toString(),
+          isPhysicalDevice: true,
+          buildNumber: info.buildNumber,
+          platformId: info.platformId,
+          productType: info.productType,
+          systemMemoryInMegabytes: info.systemMemoryInMegabytes,
         );
       } else if (Platform.isLinux) {
         final info = await _deviceInfoPlugin.linuxInfo;
-        return DeviceInfoEntity(
-          platform: 'Linux',
-          properties: {
-            'model': info.name,
-            'manufacturer': 'Linux',
-            'osVersion': info.version ?? 'unknown',
-            'sdkVersion': info.version ?? 'unknown',
-            'isPhysicalDevice': true,
-            'id': info.id,
-            'versionId': info.versionId,
-            'prettyName': info.prettyName,
-            'machineId': info.machineId,
-          },
+        return DeviceInfoEntity.linux(
+          model: info.name,
+          manufacturer: 'Linux',
+          osVersion: info.version ?? 'unknown',
+          isPhysicalDevice: true,
+          id: info.id,
+          versionId: info.versionId,
+          prettyName: info.prettyName,
+          machineId: info.machineId,
         );
       } else {
         // Web or unknown platform
-        return DeviceInfoEntity(
-          platform: 'Unknown',
-          properties: {
-            'model': 'Unknown',
-            'manufacturer': 'Unknown',
-            'osVersion': 'Unknown',
-            'sdkVersion': 'Unknown',
-            'isPhysicalDevice': false,
-          },
+        return DeviceInfoEntity.unknown(
+          platform: Platform.operatingSystem,
         );
       }
     } catch (e) {
-      return DeviceInfoEntity(
+      return DeviceInfoEntity.unknown(
         platform: Platform.operatingSystem,
-        properties: {
-          'model': 'Error',
-          'manufacturer': 'Error',
-          'osVersion': 'Error',
-          'sdkVersion': 'Error',
-          'isPhysicalDevice': false,
-          'error': e.toString(),
-        },
+        errorMessage: e.toString(),
       );
     }
   }
